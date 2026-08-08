@@ -16,7 +16,8 @@ export const site = {
   // order details (name/phone/address/payment ID) to this WhatsApp number.
   whatsappNumber: "919022022433", // country code + number, digits only
 
-  address: "Opposite Sai Baba Mandir, Nalasopara East, Palghar, Maharashtra",
+  address:
+    "Shop No 14, Bhaskar Complex, Opp Sai Baba Temple, Vijaynagar, Nalasopara East - 401209, Mumbai, Maharashtra",
 } as const;
 
 export const discountPercent = Math.round(
