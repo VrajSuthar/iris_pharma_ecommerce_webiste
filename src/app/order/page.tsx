@@ -43,6 +43,18 @@ type OrderInput = z.infer<typeof orderSchema>;
 
 type PaidOrder = OrderInput & { paymentId: string };
 
+// Autofill (and habit) commonly prepends a leading 0 or +91/91 country code
+// to Indian mobile numbers — strip those so the field always holds the bare
+// 10-digit number the schema expects.
+function sanitizePhone(value: string): string {
+  let digits = value.replace(/\D/g, "");
+  if (digits.startsWith("91") && digits.length > 10) {
+    digits = digits.slice(2);
+  }
+  digits = digits.replace(/^0+/, "");
+  return digits.slice(0, 10);
+}
+
 function buildOrderMessage(order: PaidOrder, qty: number, total: number) {
   return [
     `New order — ${site.productName}`,
@@ -100,20 +112,6 @@ export default function OrderPage() {
         description: `${site.productName} × ${qty}`,
         prefill: { name: values.name, contact: values.phone },
         theme: { color: "#00737c" },
-        // Skip straight to "pay via UPI app" (GPay/PhonePe/…) instead of
-        // showing the full method picker (cards, netbanking, etc).
-        config: {
-          display: {
-            blocks: {
-              upi: {
-                name: "Pay via UPI app",
-                instruments: [{ method: "upi", flows: ["intent"] }],
-              },
-            },
-            sequence: ["block.upi"],
-            preferences: { show_default_blocks: false },
-          },
-        },
         modal: {
           ondismiss: () => setPaying(false),
         },
@@ -128,7 +126,19 @@ export default function OrderPage() {
             if (!verifyRes.ok || !result.verified) {
               throw new Error("verification failed");
             }
-            setSubmitted({ ...values, paymentId: response.razorpay_payment_id });
+            const paidOrder = { ...values, paymentId: response.razorpay_payment_id };
+            setSubmitted(paidOrder);
+
+            // Route straight into WhatsApp with the order pre-filled so the
+            // customer only has to hit Send. Opened in a new tab (rather than
+            // navigating away) so the confirmation screen below still shows
+            // as a fallback if the browser blocks the popup.
+            const whatsappMessage = buildOrderMessage(paidOrder, qty, total);
+            window.open(
+              `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`,
+              "_blank",
+              "noopener,noreferrer"
+            );
           } catch {
             setPayError(
               "Payment went through but we couldn't verify it — please contact us with your payment ID before re-ordering."
@@ -277,6 +287,9 @@ export default function OrderPage() {
                     inputMode="numeric"
                     placeholder="9876543210"
                     {...field}
+                    onChange={(e) =>
+                      field.onChange(sanitizePhone(e.target.value))
+                    }
                   />
                 </FormControl>
                 <FormMessage />
