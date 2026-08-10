@@ -55,6 +55,20 @@ function sanitizePhone(value: string): string {
   return digits.slice(0, 10);
 }
 
+// wa.me lands on a WhatsApp web page first, which shows an "Open in app?"
+// banner instead of switching straight to the app. The whatsapp:// scheme
+// opens the installed app directly, so prefer it on mobile where the app is
+// actually installed; desktop has no app to hand off to, so keep wa.me there.
+function buildWhatsAppUrl(message: string) {
+  const text = encodeURIComponent(message);
+  const isMobile =
+    typeof navigator !== "undefined" &&
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return isMobile
+    ? `whatsapp://send?phone=${site.whatsappNumber}&text=${text}`
+    : `https://wa.me/${site.whatsappNumber}?text=${text}`;
+}
+
 function buildOrderMessage(order: PaidOrder, qty: number, total: number) {
   return [
     `New order — ${site.productName}`,
@@ -134,11 +148,7 @@ export default function OrderPage() {
             // navigating away) so the confirmation screen below still shows
             // as a fallback if the browser blocks the popup.
             const whatsappMessage = buildOrderMessage(paidOrder, qty, total);
-            window.open(
-              `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`,
-              "_blank",
-              "noopener,noreferrer"
-            );
+            window.open(buildWhatsAppUrl(whatsappMessage), "_blank", "noopener,noreferrer");
           } catch {
             setPayError(
               "Payment went through but we couldn't verify it — please contact us with your payment ID before re-ordering."
@@ -163,9 +173,7 @@ export default function OrderPage() {
 
   if (submitted) {
     const message = buildOrderMessage(submitted, qty, total);
-    const whatsappLink = `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(
-      message
-    )}`;
+    const whatsappLink = buildWhatsAppUrl(message);
 
     return (
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center gap-5 px-4 py-16 text-center sm:px-6">

@@ -4,7 +4,7 @@ export const site = {
   productName: "Derma 555 Malam",
   brandName: "Iris Pharma",
   tagline: "Ayurvedic relief from ringworm, itching & fungal infections",
-  price: 1, // TEMP: testing live payment flow at ₹1 — revert to 130 before real launch traffic
+  price: 130,
 
   mrp: 140, // INR — struck-through "MRP" shown next to the discounted price
   currency: "INR",
