@@ -9,12 +9,23 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart-context";
 import { discountPercent, type Product } from "@/lib/products";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  badge,
+}: {
+  product: Product;
+  badge?: string;
+}) {
   const { addItem } = useCart();
   const percent = discountPercent(product);
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-shadow hover:shadow-md">
+      {badge && (
+        <p className="bg-primary py-1 text-center text-[10px] font-bold tracking-wide text-primary-foreground uppercase">
+          {badge}
+        </p>
+      )}
       <div className="relative aspect-square overflow-hidden bg-slate-100">
         <Image
           src={product.image}

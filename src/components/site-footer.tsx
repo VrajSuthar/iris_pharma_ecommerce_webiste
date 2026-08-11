@@ -44,7 +44,7 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">
+          <p className="text-xs font-semibold tracking-wide text-amber-400 uppercase">
             Quick links
           </p>
           {QUICK_LINKS.map(({ href, label }) => (
@@ -59,7 +59,7 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">
+          <p className="text-xs font-semibold tracking-wide text-amber-400 uppercase">
             Support
           </p>
           <a
@@ -78,7 +78,7 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">
+          <p className="text-xs font-semibold tracking-wide text-amber-400 uppercase">
             Payments
           </p>
           <p className="text-sm text-white/80">UPI (GPay / PhonePe)</p>
@@ -105,6 +105,9 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {site.brandName}. All rights reserved.
           </p>
         </div>
+        <p className="pb-5 text-center text-xs text-white/40">
+          Made with care for healthy skin across India.
+        </p>
       </div>
     </footer>
   );

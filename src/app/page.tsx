@@ -95,18 +95,31 @@ const STEPS = [
   },
 ];
 
+function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="mb-6 flex flex-col items-center gap-1.5 text-center">
+      <h2 className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="mx-auto max-w-md text-sm text-slate-500">{subtitle}</p>
+      )}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const { count, subtotal } = useCart();
   const flagshipDiscount = discountPercent(flagship);
 
   return (
     <main className="flex flex-1 flex-col pb-24 sm:pb-0">
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-transparent">
+      <section className="relative overflow-hidden bg-primary/[0.06]">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center">
           <div className="mt-[-6rem] size-[26rem] rounded-full bg-primary/10 blur-3xl" />
         </div>
 
-        <div className="mx-auto grid w-full max-w-3xl items-center gap-10 px-4 py-10 sm:grid-cols-2 sm:px-6 sm:py-16">
+        <div className="mx-auto grid w-full max-w-3xl items-center gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 sm:py-20">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -117,7 +130,7 @@ export default function HomePage() {
               Ayurvedic • Made in India
             </p>
 
-            <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+            <h1 className="text-3xl leading-[1.15] font-extrabold tracking-tight text-primary sm:text-4xl">
               Pure Ayurvedic Care, Delivered
             </h1>
             <p className="mx-auto max-w-md text-slate-600 sm:mx-0">{site.tagline}</p>
@@ -154,7 +167,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-            className="relative order-1 overflow-hidden rounded-3xl bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_40px_-24px_rgba(15,23,42,0.25)] ring-1 ring-slate-200 sm:order-2"
+            className="relative order-1 overflow-hidden rounded-[2rem] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_48px_-24px_rgba(15,23,42,0.3)] ring-1 ring-slate-200 sm:order-2"
           >
             <Image
               src={flagship.image}
@@ -173,39 +186,46 @@ export default function HomePage() {
       </section>
 
       <section id="shop" className="scroll-mt-24 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-          <h2 className="text-lg font-semibold text-slate-900">Shop our products</h2>
-          <p className="mb-4 text-sm text-slate-500">
-            {PRODUCTS.length} Ayurvedic herbal {PRODUCTS.length === 1 ? "product" : "products"} — more coming soon.
-          </p>
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+          <SectionHeading
+            title="Shop our products"
+            subtitle={`${PRODUCTS.length} Ayurvedic herbal ${PRODUCTS.length === 1 ? "product" : "products"} — more coming soon.`}
+          />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            {PRODUCTS.map((product) => (
-              <ProductCard key={product.slug} product={product} />
+            {PRODUCTS.map((product, i) => (
+              <ProductCard
+                key={product.slug}
+                product={product}
+                badge={i === 0 ? "Bestseller" : undefined}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-3xl grid-cols-2 gap-8 px-4 py-10 sm:grid-cols-4 sm:px-6">
-          {HIGHLIGHTS.map(({ title, subtitle }, i) => (
-            <motion.div
-              key={title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="flex flex-col items-center gap-1 text-center sm:items-start sm:text-left"
-            >
-              <p className="text-sm font-bold text-primary">{title}</p>
-              <p className="text-xs text-slate-500">{subtitle}</p>
-            </motion.div>
-          ))}
+      <section className="border-t border-slate-200 bg-primary/[0.04]">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+          <SectionHeading title="Why Iris Pharma" />
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+            {HIGHLIGHTS.map(({ title, subtitle }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+                className="flex flex-col items-center gap-1 text-center"
+              >
+                <p className="text-base font-bold text-primary">{title}</p>
+                <p className="text-xs text-slate-500">{subtitle}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">Product photos</h2>
+      <section className="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6">
+        <SectionHeading title="Product photos" />
         <div className="grid grid-cols-3 gap-3">
           {flagship.gallery.map((src) => (
             <div
@@ -224,10 +244,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="how-to-use" className="scroll-mt-24 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">How to use {flagship.name}</h2>
-          <ol className="flex flex-col gap-4">
+      <section id="how-to-use" className="scroll-mt-24 border-t border-slate-200 bg-primary/[0.04]">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+          <SectionHeading title={`How to use ${flagship.name}`} />
+          <ol className="mx-auto flex max-w-md flex-col gap-4">
             {STEPS.map(({ step, text }) => (
               <li key={step} className="flex items-start gap-3">
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
@@ -241,13 +261,11 @@ export default function HomePage() {
       </section>
 
       <section className="border-t border-slate-200 bg-stone-50">
-        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-          <h2 className="mb-1 text-lg font-semibold text-slate-900">
-            Why people trust Iris Pharma
-          </h2>
-          <p className="mb-6 text-sm text-slate-500">
-            No fluff — just what you actually get.
-          </p>
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+          <SectionHeading
+            title="Why people trust Iris Pharma"
+            subtitle="No fluff — just what you actually get."
+          />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {TRUST_POINTS.map(({ icon: Icon, iconClass, title, text }, i) => (
               <motion.div
@@ -270,10 +288,8 @@ export default function HomePage() {
       </section>
 
       <section id="faq" className="scroll-mt-24 border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
-            Frequently asked questions
-          </h2>
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+          <SectionHeading title="Frequently asked questions" />
           <Accordion type="single" collapsible className="w-full">
             {FAQS.map(({ q, a }) => (
               <AccordionItem key={q} value={q}>
