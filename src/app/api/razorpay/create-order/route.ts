@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getRazorpayClient } from "@/lib/razorpay";
 import { site } from "@/lib/config";
+import { getProduct, type Product } from "@/lib/products";
 
 // Razorpay caps each note value at 256 characters.
 function noteValue(value: unknown): string | undefined {
@@ -12,15 +13,34 @@ function noteValue(value: unknown): string | undefined {
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
-  const qty = Number(body?.qty);
+  const rawItems: unknown[] = Array.isArray(body?.items) ? body.items : [];
 
-  if (!Number.isInteger(qty) || qty < 1 || qty > 50) {
-    return NextResponse.json({ error: "Invalid quantity" }, { status: 400 });
+  type Line = { product: Product; qty: number };
+
+  // Every line is resolved against the server-side product catalog — slug
+  // and qty are the only things trusted from the client. Price is always
+  // looked up here, never taken from the request, so a tampered request
+  // can't change what actually gets charged.
+  const lines: Line[] = rawItems
+    .map((item: unknown): Line | null => {
+      const slug = (item as { slug?: unknown })?.slug;
+      const qty = Number((item as { qty?: unknown })?.qty);
+      if (typeof slug !== "string" || !Number.isInteger(qty) || qty < 1 || qty > 50) {
+        return null;
+      }
+      const product = getProduct(slug);
+      return product ? { product, qty } : null;
+    })
+    .filter((line): line is Line => line !== null);
+
+  if (lines.length === 0) {
+    return NextResponse.json({ error: "Cart is empty or invalid" }, { status: 400 });
   }
 
-  // Price is looked up server-side from config, never trusted from the
-  // client, so a tampered request can't change what actually gets charged.
-  const amountPaise = site.price * qty * 100;
+  const amountPaise = lines.reduce(
+    (sum, { product, qty }) => sum + product.price * qty * 100,
+    0
+  );
 
   // Name/phone/address are informational only (shown in the Razorpay
   // Dashboard so the order can be fulfilled even if the customer never
@@ -35,8 +55,7 @@ export async function POST(request: Request) {
       currency: site.currency,
       receipt: `order_rcpt_${Date.now()}`,
       notes: {
-        product: site.productName,
-        qty: String(qty),
+        items: lines.map(({ product, qty }) => `${product.name} x${qty}`).join(", ").slice(0, 256),
         ...(name && { name }),
         ...(phone && { phone }),
         ...(address && { address }),

@@ -12,8 +12,7 @@ export default function PrivacyPolicyPage() {
     <PolicyPage title="Privacy Policy" updated="8 August 2026">
       <p>
         This policy explains what information {site.brandName} collects when
-        you order {site.productName} through this website, and how it&apos;s
-        used.
+        you order products through this website, and how it&apos;s used.
       </p>
 
       <h2>What we collect</h2>

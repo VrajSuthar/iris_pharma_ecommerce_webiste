@@ -6,9 +6,9 @@ import { site } from "@/lib/config";
 
 const QUICK_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/#how-to-use", label: "How to use" },
+  { href: "/shop", label: "Shop" },
+  { href: "/cart", label: "Cart" },
   { href: "/#faq", label: "FAQ" },
-  { href: "/order", label: "Order now" },
 ];
 
 const POLICY_LINKS = [
@@ -31,10 +31,7 @@ export function SiteFooter() {
               {site.brandName}
             </span>
           </div>
-          <p className="max-w-xs text-sm text-white/70">
-            Ayurvedic relief from ringworm, itching & fungal infections —
-            made with natural herbs.
-          </p>
+          <p className="max-w-xs text-sm text-white/70">{site.tagline}</p>
           <a
             href={`https://wa.me/${site.whatsappNumber}`}
             target="_blank"

@@ -19,7 +19,7 @@ export default function TermsPage() {
       <h2>Product information</h2>
       <p>
         Photos and descriptions are for reference — actual packaging may
-        vary slightly. {site.productName} is for external/topical use only;
+        vary slightly. Our products are for external/topical use only;
         follow the usage instructions on the product packaging. Stop use and
         consult a physician if irritation occurs. Keep out of reach of
         children.

@@ -6,13 +6,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import {
-  CheckCircle2,
-  Loader2,
-  MessageCircle,
-  Minus,
-  Plus,
-} from "lucide-react";
+import { CheckCircle2, Loader2, MessageCircle, ShoppingBag } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -25,10 +19,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { discountPercent, site } from "@/lib/config";
+import { site } from "@/lib/config";
+import { useCart, type CartItem } from "@/lib/cart-context";
 
 const orderSchema = z.object({
   name: z.string().min(2, "Enter your full name"),
@@ -41,7 +35,11 @@ const orderSchema = z.object({
 
 type OrderInput = z.infer<typeof orderSchema>;
 
-type PaidOrder = OrderInput & { paymentId: string };
+type PaidOrder = OrderInput & {
+  paymentId: string;
+  items: CartItem[];
+  total: number;
+};
 
 // Autofill (and habit) commonly prepends a leading 0 or +91/91 country code
 // to Indian mobile numbers — strip those so the field always holds the bare
@@ -69,12 +67,15 @@ function buildWhatsAppUrl(message: string) {
     : `https://wa.me/${site.whatsappNumber}?text=${text}`;
 }
 
-function buildOrderMessage(order: PaidOrder, qty: number, total: number) {
+function buildOrderMessage(order: PaidOrder) {
   return [
-    `New order — ${site.productName}`,
+    `New order — ${site.brandName}`,
     ``,
-    `Quantity: ${qty}`,
-    `Total: ₹${total}`,
+    ...order.items.map(
+      ({ product, qty }) => `${product.name} × ${qty} — ₹${product.price * qty}`
+    ),
+    ``,
+    `Total: ₹${order.total}`,
     ``,
     `Name: ${order.name}`,
     `Phone: ${order.phone}`,
@@ -85,7 +86,7 @@ function buildOrderMessage(order: PaidOrder, qty: number, total: number) {
 }
 
 export default function OrderPage() {
-  const [qty, setQty] = useState(1);
+  const { items, subtotal, mrpSubtotal, clear } = useCart();
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState<PaidOrder | null>(null);
@@ -95,9 +96,7 @@ export default function OrderPage() {
     defaultValues: { name: "", phone: "", address: "" },
   });
 
-  const total = site.price * qty;
-  const mrpTotal = site.mrp * qty;
-  const savings = mrpTotal - total;
+  const savings = mrpSubtotal - subtotal;
 
   async function onSubmit(values: OrderInput) {
     setPayError(null);
@@ -112,7 +111,10 @@ export default function OrderPage() {
       const res = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qty, ...values }),
+        body: JSON.stringify({
+          items: items.map(({ product, qty }) => ({ slug: product.slug, qty })),
+          ...values,
+        }),
       });
       if (!res.ok) throw new Error("create-order failed");
       const order = await res.json();
@@ -123,7 +125,7 @@ export default function OrderPage() {
         currency: order.currency,
         order_id: order.orderId,
         name: site.brandName,
-        description: `${site.productName} × ${qty}`,
+        description: items.map(({ product, qty }) => `${product.name} × ${qty}`).join(", "),
         prefill: { name: values.name, contact: values.phone },
         theme: { color: "#00737c" },
         modal: {
@@ -140,14 +142,20 @@ export default function OrderPage() {
             if (!verifyRes.ok || !result.verified) {
               throw new Error("verification failed");
             }
-            const paidOrder = { ...values, paymentId: response.razorpay_payment_id };
+            const paidOrder: PaidOrder = {
+              ...values,
+              paymentId: response.razorpay_payment_id,
+              items,
+              total: subtotal,
+            };
             setSubmitted(paidOrder);
+            clear();
 
             // Route straight into WhatsApp with the order pre-filled so the
             // customer only has to hit Send. Opened in a new tab (rather than
             // navigating away) so the confirmation screen below still shows
             // as a fallback if the browser blocks the popup.
-            const whatsappMessage = buildOrderMessage(paidOrder, qty, total);
+            const whatsappMessage = buildOrderMessage(paidOrder);
             window.open(buildWhatsAppUrl(whatsappMessage), "_blank", "noopener,noreferrer");
           } catch {
             setPayError(
@@ -172,8 +180,8 @@ export default function OrderPage() {
   }
 
   if (submitted) {
-    const message = buildOrderMessage(submitted, qty, total);
-    const whatsappLink = buildWhatsAppUrl(message);
+    const whatsappMessage = buildOrderMessage(submitted);
+    const whatsappLink = buildWhatsAppUrl(whatsappMessage);
 
     return (
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center gap-5 px-4 py-16 text-center sm:px-6">
@@ -195,13 +203,17 @@ export default function OrderPage() {
         </p>
 
         <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm text-slate-600">
-          <p className="font-semibold text-slate-900">
-            {site.productName} × {qty}
-          </p>
-          <p>{submitted.name}</p>
+          {submitted.items.map(({ product, qty }) => (
+            <p key={product.slug} className="font-semibold text-slate-900">
+              {product.name} × {qty}
+            </p>
+          ))}
+          <p className="mt-2">{submitted.name}</p>
           <p>{submitted.phone}</p>
           <p>{submitted.address}</p>
-          <p className="mt-2 font-semibold text-slate-900">Total: ₹{total} — paid</p>
+          <p className="mt-2 font-semibold text-slate-900">
+            Total: ₹{submitted.total} — paid
+          </p>
         </div>
 
         <Button asChild size="lg" className="w-full rounded-full">
@@ -212,8 +224,27 @@ export default function OrderPage() {
         </Button>
 
         <Link href="/" className="text-sm font-medium text-primary hover:underline">
-          Back to product
+          Back to home
         </Link>
+      </main>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center gap-4 px-4 py-16 text-center sm:px-6">
+        <span className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <ShoppingBag className="size-6" />
+        </span>
+        <h1 className="text-xl font-bold tracking-tight text-slate-900">
+          Your cart is empty
+        </h1>
+        <p className="text-sm text-slate-500">
+          Add a product to your cart before checking out.
+        </p>
+        <Button asChild size="lg" className="rounded-full px-8">
+          <Link href="/shop">Shop products</Link>
+        </Button>
       </main>
     );
   }
@@ -222,49 +253,26 @@ export default function OrderPage() {
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-10 sm:px-6">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
-      <div className="mb-6 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-        <Image
-          src="/derma-555/pack-and-jar.jpg"
-          alt={site.productName}
-          width={56}
-          height={56}
-          className="size-14 rounded-xl object-cover"
-        />
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-slate-900">
-            {site.productName}
-          </p>
-          <div className="flex items-center gap-1.5">
-            <p className="text-xs font-semibold text-slate-900">₹{site.price} each</p>
-            <p className="text-xs text-slate-400 line-through">₹{site.mrp}</p>
-            <Badge className="rounded-full bg-success/10 px-1.5 py-0 text-[10px] text-success">
-              {discountPercent}% off
-            </Badge>
+      <div className="mb-6 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+        {items.map(({ product, qty }) => (
+          <div key={product.slug} className="flex items-center gap-3">
+            <Image
+              src={product.image}
+              alt={product.name}
+              width={56}
+              height={56}
+              className="size-14 rounded-xl object-cover"
+            />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-slate-900">
+                {product.name} × {qty}
+              </p>
+              <p className="text-xs font-semibold text-slate-900">
+                ₹{product.price * qty}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            className="rounded-full"
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            aria-label="Decrease quantity"
-          >
-            <Minus className="size-3.5" />
-          </Button>
-          <span className="w-4 text-center text-sm font-medium">{qty}</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            className="rounded-full"
-            onClick={() => setQty((q) => q + 1)}
-            aria-label="Increase quantity"
-          >
-            <Plus className="size-3.5" />
-          </Button>
-        </div>
+        ))}
       </div>
 
       <Form {...form}>
@@ -325,15 +333,15 @@ export default function OrderPage() {
           <div className="flex flex-col gap-1.5 rounded-2xl border border-slate-200 bg-white p-4 text-sm">
             <div className="flex items-center justify-between text-slate-500">
               <span>MRP total</span>
-              <span className="line-through">₹{mrpTotal}</span>
+              <span className="line-through">₹{mrpSubtotal}</span>
             </div>
             <div className="flex items-center justify-between text-success">
-              <span>Discount ({discountPercent}% off)</span>
+              <span>Discount</span>
               <span>−₹{savings}</span>
             </div>
             <div className="mt-1.5 flex items-center justify-between border-t border-slate-100 pt-1.5 text-base font-semibold text-slate-900">
               <span>Amount payable</span>
-              <span>₹{total}</span>
+              <span>₹{subtotal}</span>
             </div>
           </div>
 
@@ -350,7 +358,7 @@ export default function OrderPage() {
                 Opening payment…
               </>
             ) : (
-              `Pay ₹${total} with GPay / UPI`
+              `Pay ₹${subtotal} with GPay / UPI`
             )}
           </Button>
         </form>

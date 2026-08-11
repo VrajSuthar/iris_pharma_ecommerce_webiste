@@ -1,12 +1,9 @@
-// Single place to edit the store's business details. Everything here is
-// public (bundled into the client), so never put a secret in this file.
+// Brand-level business details, shared across every product. Everything
+// here is public (bundled into the client), so never put a secret in this
+// file. Per-product data (name, price, images) lives in src/lib/products.ts.
 export const site = {
-  productName: "Derma 555 Malam",
   brandName: "Iris Pharma",
-  tagline: "Ayurvedic relief from ringworm, itching & fungal infections",
-  price: 130,
-
-  mrp: 140, // INR — struck-through "MRP" shown next to the discounted price
+  tagline: "Ayurvedic skincare & herbal wellness, made in India",
   currency: "INR",
 
   // Payment is charged for real via Razorpay (see src/lib/razorpay.ts and
@@ -20,7 +17,3 @@ export const site = {
   address:
     "Shop No 14, Bhaskar Complex, Opp Sai Baba Temple, Vijaynagar, Nalasopara East - 401209, Mumbai, Maharashtra",
 } as const;
-
-export const discountPercent = Math.round(
-  ((site.mrp - site.price) / site.mrp) * 100
-);

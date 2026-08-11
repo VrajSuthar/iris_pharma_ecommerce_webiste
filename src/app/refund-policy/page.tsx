@@ -11,8 +11,8 @@ export default function RefundPolicyPage() {
   return (
     <PolicyPage title="Refund & Cancellation Policy" updated="8 August 2026">
       <p>
-        Because {site.productName} is a topical personal-care product, we
-        don&apos;t accept returns once it&apos;s delivered, for hygiene
+        Because our products are topical personal-care items, we
+        don&apos;t accept returns once delivered, for hygiene
         reasons — except in the cases below.
       </p>
 

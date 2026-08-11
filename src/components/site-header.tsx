@@ -1,23 +1,24 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, ShoppingCart } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { discountPercent } from "@/lib/config";
+import { useCart } from "@/lib/cart-context";
 
 const NAV_LINKS = [
-  { href: "/#how-to-use", label: "How to use" },
+  { href: "/shop", label: "Shop" },
   { href: "/#faq", label: "FAQ" },
 ];
 
 export function SiteHeader() {
+  const { count } = useCart();
+
   return (
     <header className="sticky top-0 z-30">
       <div className="flex items-center justify-center gap-1.5 bg-primary px-4 py-2 text-center text-xs font-medium text-primary-foreground">
         <ShieldCheck className="size-3.5 shrink-0" />
-        <span>
-          Flat {discountPercent}% off, today only — secure payment via Razorpay
-        </span>
+        <span>100% Ayurvedic herbal products · Secure Razorpay checkout</span>
       </div>
 
       <div className="border-b border-slate-200 bg-white/90 shadow-sm shadow-slate-900/[0.02] backdrop-blur-lg">
@@ -41,21 +42,32 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 sm:flex">
-            {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="text-sm font-medium text-slate-600 hover:text-primary"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex items-center gap-5">
+            <nav className="flex items-center gap-5">
+              {NAV_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="text-sm font-medium text-slate-600 hover:text-primary"
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
 
-          <Button asChild size="sm" className="rounded-full">
-            <Link href="/order">Buy now</Link>
-          </Button>
+            <Link
+              href="/cart"
+              className="relative flex size-8 items-center justify-center rounded-full text-slate-600 hover:bg-primary/10 hover:text-primary"
+              aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+            >
+              <ShoppingCart className="size-4.5" />
+              {count > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                  {count > 9 ? "9+" : count}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
       </div>
     </header>

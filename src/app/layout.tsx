@@ -5,6 +5,7 @@ import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
+import { CartProvider } from "@/lib/cart-context";
 import { site } from "@/lib/config";
 
 const geistSans = Geist({
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${site.productName} — ${site.brandName}`,
+  title: `${site.brandName} — ${site.tagline}`,
   description: site.tagline,
 };
 
@@ -29,10 +30,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-slate-50">
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">{children}</div>
-        <SiteFooter />
-        <Toaster richColors position="top-right" />
+        <CartProvider>
+          <SiteHeader />
+          <div className="flex flex-1 flex-col">{children}</div>
+          <SiteFooter />
+          <Toaster richColors position="top-right" />
+        </CartProvider>
       </body>
     </html>
   );
