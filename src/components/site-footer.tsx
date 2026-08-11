@@ -1,7 +1,15 @@
+import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import { MapPin, MessageCircle } from "lucide-react";
 
 import { site } from "@/lib/config";
+
+const QUICK_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/#how-to-use", label: "How to use" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/order", label: "Order now" },
+];
 
 const POLICY_LINKS = [
   { href: "/privacy-policy", label: "Privacy Policy" },
@@ -12,37 +20,94 @@ const POLICY_LINKS = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 px-4 py-8 text-center sm:px-6">
-        <p className="text-sm font-semibold text-slate-900">
-          {site.brandName}
-        </p>
-        <p className="max-w-sm text-sm text-slate-500">{site.address}</p>
-        <a
-          href={`https://wa.me/${site.whatsappNumber}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-        >
-          <MessageCircle className="size-4" />
-          Message us on WhatsApp
-        </a>
+    <footer className="bg-[#00373d] text-white">
+      <div className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-10 sm:grid-cols-[1.2fr_1fr_1fr_1fr] sm:px-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <span className="relative size-8 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-white/20">
+              <Image src="/logo.png" alt="" fill className="object-contain p-0.5" />
+            </span>
+            <span className="text-base font-bold tracking-tight">
+              {site.brandName}
+            </span>
+          </div>
+          <p className="max-w-xs text-sm text-white/70">
+            Ayurvedic relief from ringworm, itching & fungal infections —
+            made with natural herbs.
+          </p>
+          <a
+            href={`https://wa.me/${site.whatsappNumber}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-white hover:underline"
+          >
+            <MessageCircle className="size-4" />
+            Message us on WhatsApp
+          </a>
+        </div>
 
-        <nav className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
-          {POLICY_LINKS.map(({ href, label }) => (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">
+            Quick links
+          </p>
+          {QUICK_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-xs font-medium text-slate-500 hover:text-primary hover:underline"
+              className="text-sm text-white/80 hover:text-white hover:underline"
             >
               {label}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        <p className="mt-4 text-xs text-slate-400">
-          © {new Date().getFullYear()} {site.brandName}. All rights reserved.
-        </p>
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">
+            Support
+          </p>
+          <a
+            href={`https://wa.me/${site.whatsappNumber}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-start gap-1.5 text-sm text-white/80 hover:text-white"
+          >
+            <MessageCircle className="mt-0.5 size-3.5 shrink-0" />
+            WhatsApp support
+          </a>
+          <p className="flex items-start gap-1.5 text-sm text-white/80">
+            <MapPin className="mt-0.5 size-3.5 shrink-0" />
+            {site.address}
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold tracking-wide text-white/50 uppercase">
+            Payments
+          </p>
+          <p className="text-sm text-white/80">UPI (GPay / PhonePe)</p>
+          <p className="text-sm text-white/80">Debit / Credit cards</p>
+          <p className="text-sm text-white/80">Net banking</p>
+          <p className="text-xs text-white/50">Secured by Razorpay</p>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-2 px-4 py-5 text-center sm:flex-row sm:justify-between sm:px-6">
+          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+            {POLICY_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-xs font-medium text-white/60 hover:text-white hover:underline"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+          <p className="text-xs text-white/50">
+            © {new Date().getFullYear()} {site.brandName}. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );
