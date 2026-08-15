@@ -21,11 +21,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
+import { PromoBadge } from "@/components/promo-badge";
 import { useCart } from "@/lib/cart-context";
 import { site } from "@/lib/config";
 import { discountPercent, PRODUCTS } from "@/lib/products";
 
 const flagship = PRODUCTS[0];
+const promoProduct = PRODUCTS.find((p) => p.promoTag);
 
 const CONDITIONS = ["Ringworm", "Scabies", "Itching", "Cracked skin", "Fungal infection"];
 
@@ -65,12 +67,8 @@ const TRUST_POINTS = [
 
 const FAQS = [
   {
-    q: `What is ${flagship.name} used for?`,
-    a: "It's an Ayurvedic ointment formulated for ringworm, scabies, itching, cracked skin and fungal skin infections. See the “How to use” section above for application instructions.",
-  },
-  {
-    q: "Is it safe for daily use?",
-    a: "It's made with natural herbal ingredients for topical use up to three times a day. If you have sensitive skin or a pre-existing condition, do a patch test first and consult a doctor before use.",
+    q: "Are your products safe for daily use?",
+    a: "Yes — every product is made with natural herbal ingredients for regular use as directed. If you have sensitive skin or a pre-existing condition, do a patch test first and consult a doctor before use. Each product page has specific usage steps.",
   },
   {
     q: "How do I pay and place an order?",
@@ -83,15 +81,6 @@ const FAQS = [
   {
     q: "Need help with an order?",
     a: "Message us on WhatsApp any time — the link is in the footer below — and we'll help you out.",
-  },
-];
-
-const STEPS = [
-  { step: "1", text: "Clean the affected area well and pat it dry." },
-  { step: "2", text: `Gently apply a thin layer of ${flagship.name}, three times a day.` },
-  {
-    step: "3",
-    text: "For dry or cracked heels, apply generously and wear socks overnight for best results.",
   },
 ];
 
@@ -143,6 +132,12 @@ export default function HomePage() {
               ))}
             </div>
 
+            {promoProduct && (
+              <Link href={`/product/${promoProduct.slug}`} className="mx-auto sm:mx-0">
+                <PromoBadge label={`${promoProduct.promoTag} · ${discountPercent(promoProduct)}% OFF`} />
+              </Link>
+            )}
+
             <div className="mt-2 flex flex-col items-center gap-3 sm:items-start">
               <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
                 <Button asChild size="lg" className="group/cta rounded-full px-8">
@@ -152,7 +147,7 @@ export default function HomePage() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-                  <Link href="#how-to-use">How to use</Link>
+                  <Link href={`/product/${flagship.slug}`}>View bestseller</Link>
                 </Button>
               </div>
 
@@ -167,16 +162,21 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-            className="relative order-1 overflow-hidden rounded-[2rem] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_48px_-24px_rgba(15,23,42,0.3)] ring-1 ring-slate-200 sm:order-2"
+            className="relative order-1 sm:order-2"
           >
-            <Image
-              src={flagship.image}
-              alt={flagship.name}
-              width={1063}
-              height={1500}
-              priority
-              className="h-auto w-full object-cover"
-            />
+            <Link
+              href={`/product/${flagship.slug}`}
+              className="block overflow-hidden rounded-[2rem] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_48px_-24px_rgba(15,23,42,0.3)] ring-1 ring-slate-200"
+            >
+              <Image
+                src={flagship.image}
+                alt={flagship.name}
+                width={1063}
+                height={1500}
+                priority
+                className="h-auto w-full object-cover"
+              />
+            </Link>
             <div className="absolute top-4 left-4 flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground shadow-lg shadow-primary/30">
               <BadgePercent className="size-3.5" />
               Bestseller · {flagshipDiscount}% OFF
@@ -221,42 +221,6 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6">
-        <SectionHeading title="Product photos" />
-        <div className="grid grid-cols-3 gap-3">
-          {flagship.gallery.map((src) => (
-            <div
-              key={src}
-              className="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-shadow hover:shadow-md"
-            >
-              <Image
-                src={src}
-                alt={flagship.name}
-                width={400}
-                height={400}
-                className="aspect-square h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="how-to-use" className="scroll-mt-24 border-t border-slate-200 bg-primary/[0.04]">
-        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-          <SectionHeading title={`How to use ${flagship.name}`} />
-          <ol className="mx-auto flex max-w-md flex-col gap-4">
-            {STEPS.map(({ step, text }) => (
-              <li key={step} className="flex items-start gap-3">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-                  {step}
-                </span>
-                <p className="pt-0.5 text-sm leading-relaxed text-slate-600">{text}</p>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 
