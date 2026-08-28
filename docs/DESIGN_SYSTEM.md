@@ -20,16 +20,15 @@ Colors are sampled directly from `public/logo.png` (the IRIS Pharma logo):
 | Destructive               | shadcn default red | Unchanged — standard error semantic |
 | Warning                   | Tailwind `amber`  | Unchanged — standard warning semantic |
 
-Both colors are defined as CSS variables in `src/app/globals.css`
-(`--primary`, `--success`, plus `-foreground` pairs and light/dark
-variants) and registered in the `@theme inline` block as
-`--color-primary` / `--color-success`, which is what makes Tailwind
-utilities like `bg-primary`, `text-primary`, `bg-success/10` etc. work.
+Both colors are defined as plain CSS custom properties in
+`site/assets/css/global.css` (`--color-primary`, `--color-success`, plus
+`-foreground` pairs) since the site is now static HTML/CSS with no
+Tailwind/shadcn build step.
 
 **To re-theme the whole site, change these variables in one place —
-`src/app/globals.css` — and every component below updates automatically.**
-Do not hardcode a hex value or a Tailwind palette color (`emerald-600`,
-`teal-500`, etc.) anywhere else for brand/interactive purposes.
+`site/assets/css/global.css` — and every page picks it up automatically.**
+Do not hardcode a hex value for brand/interactive purposes anywhere else —
+reference `var(--color-primary)` / `var(--color-success)` instead.
 
 ## What each token means
 
@@ -51,29 +50,29 @@ Do not hardcode a hex value or a Tailwind palette color (`emerald-600`,
 
 ## Rules for new UI
 
-1. Never use `bg-primary`'s default via a raw shadcn `<Button variant="default">`
-   and *also* hand-roll a competing brand color nearby — pick one. In
-   practice: just use `<Button>` (default variant) for brand CTAs; it's
-   already teal.
+1. Don't hand-roll a competing brand color next to the existing `.btn-primary` —
+   pick one. In practice: just use the `.btn` / `.btn-primary` classes in
+   `global.css` for brand CTAs; they're already teal.
 2. For a brand-colored link, chip, active state, or icon circle, use
-   `text-primary` / `bg-primary` / `bg-primary/10` — not `emerald-*`,
-   `teal-*`, or a hex value.
-3. For "this is good/positive/in-stock/delivered", use `text-success` /
-   `bg-success/10` — not `green-*` or `emerald-*`.
+   `var(--color-primary)` — not a raw hex value or a new color.
+3. For "this is good/positive/in-stock/delivered", use
+   `var(--color-success)` — not an arbitrary green.
 4. If you need a genuinely new categorical color (a new KPI accent, a new
-   order status), it's fine to reach for a plain Tailwind color — just
-   keep it out of the `primary`/`success` semantic space so those two stay
+   order status), it's fine to add a new CSS variable — just keep it out of
+   the `--color-primary`/`--color-success` semantic space so those two stay
    meaningful.
-5. Check contrast before changing the `--primary`/`--success` lightness in
-   `globals.css` — both are tuned to ~5.5–7:1 against white specifically
+5. Check contrast before changing `--color-primary`/`--color-success` in
+   `global.css` — both are tuned to ~5.5–7:1 against white specifically
    because the logo's raw colors (bright teal, lime green) fail WCAG AA
    contrast on their own. If you swap in the raw brand color you will
    break text-on-color and button legibility.
 
 ## Where things live
 
-- `src/app/globals.css` — all color tokens (`:root` and `.dark`).
-- `public/logo.png` — the source of truth for brand colors, used by
-  `src/components/site-header.tsx`.
-- `src/components/ui/button.tsx` — shadcn `Button`, already wired to
-  `bg-primary`; don't override its color per-usage.
+- `site/assets/css/global.css` — all color tokens (`:root`), shared
+  reset/typography, and the header/footer/button styles used on every page.
+- `site/assets/images/logo.png` — the source of truth for brand colors,
+  used by the header and footer on every page.
+- Page-specific styling lives in `site/assets/css/<page>.css` (e.g.
+  `home.css`, `shop.css`, `product.css`) — one file per page, loaded only
+  by that page.

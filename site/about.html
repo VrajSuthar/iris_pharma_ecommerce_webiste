@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Iris Pharma</title>
+  <meta name="description" content="About Iris Pharma — Ayurvedic skincare __DESC__ herbal wellness." />
+  <link rel="icon" href="/assets/images/logo.png" />
+  <link rel="stylesheet" href="/assets/css/global.css" />
+  <link rel="stylesheet" href="/assets/css/about.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__announcement">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>100% Ayurvedic herbal products &middot; Order confirmation via WhatsApp</span>
+    </div>
+    <div class="site-header__bar">
+      <div class="wrap site-header__row">
+        <a href="/index.html" class="site-header__brand">
+          <span class="site-header__logo">
+            <img src="/assets/images/logo.png" alt="Iris Pharma" onerror="this.style.display='none'" />
+          </span>
+          <span class="site-header__brand-name">
+            <strong>Iris Pharma</strong>
+            <span>Ayurvedic &bull; Trust &bull; Care</span>
+          </span>
+        </a>
+
+        <nav class="site-header__nav" id="nav-menu">
+          <div class="site-header__nav-head">
+            <span>Menu</span>
+            <button type="button" class="site-header__nav-close" aria-label="Close menu" onclick="toggleMobileMenu()">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <a href="/index.html">Home</a>
+          <a href="/about.html" class="active" aria-current="page">About</a>
+          <a href="/shop.html">Shop</a>
+          <a href="/index.html#faq">FAQ</a>
+        </nav>
+
+        <div class="site-header__overlay" id="navOverlay"></div>
+
+        <div class="site-header__actions">
+          <a href="/cart.html" class="site-header__cart" aria-label="Cart">
+            <svg class="icon" viewBox="0 0 24 24" style="width:1.125rem;height:1.125rem"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            <span class="site-header__cart-badge" data-cart-badge hidden>0</span>
+          </a>
+
+          <button type="button" class="site-header__menu-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="toggleMobileMenu()">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="about-hero">
+      <img src="/assets/images/stock/turmeric-paste-hands.jpg" alt="Fresh turmeric paste, an Ayurvedic ingredient, being prepared by hand" />
+      <div class="about-hero__scrim"></div>
+      <div class="wrap about-hero__content">
+        <span class="eyebrow" style="color:rgba(255,255,255,.85)">Our story</span>
+        <h1>Ayurveda for the everyday, made with care</h1>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap wrap--narrow about-intro">
+        <p class="about-intro__lead">
+          Iris Pharma started with a simple frustration: skincare shelves full of
+          promises, short on honesty about what's actually inside the bottle.
+        </p>
+        <p>
+          We went back to what Indian households have trusted for generations —
+          turmeric, neem, aloe vera — and paired those ingredients with careful,
+          small-batch formulation. No harsh chemicals, no confusing ingredient
+          lists. Just herbal formulas that work, secure online checkout, and a
+          real person a WhatsApp chat away if you have a question before you buy.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--muted">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">What we stand for</span>
+          <h2 class="section-title">Our values</h2>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-card__icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></div>
+            <h3>Honest ingredients</h3>
+            <p>Every formula lists what's in it — and what we deliberately leave out.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-card__icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <h3>Rooted in tradition</h3>
+            <p>Ayurvedic recipes tested by generations, refined for modern routines.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-card__icon"><svg class="icon" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg></div>
+            <h3>Real conversations</h3>
+            <p>No chatbots — your questions get answered by our team on WhatsApp.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-card__icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <h3>Made in India</h3>
+            <p>Formulated, packed and shipped from Nalasopara, Maharashtra.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap about-gallery">
+        <img src="/assets/images/stock/turmeric-soap.jpg" alt="Handmade turmeric soap with natural ingredients" loading="lazy" />
+        <img src="/assets/images/stock/dropper-hand.jpg" alt="Applying a herbal serum with a dropper" loading="lazy" />
+        <img src="/assets/images/stock/bath-essentials-3.jpg" alt="Natural herbal bath essentials" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="section newsletter">
+      <div class="wrap newsletter__inner">
+        <div>
+          <h2 class="section-title" style="text-align:left;color:#fff">Have a question before you order?</h2>
+          <p class="section-sub" style="max-width:none;color:rgba(255,255,255,.8)">Message us on WhatsApp — a real person from our team will reply.</p>
+        </div>
+        <a
+          class="btn btn-primary newsletter__cta"
+          href="https://wa.me/919022022433"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg class="icon" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>
+          Message us on WhatsApp
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap site-footer__grid">
+      <div class="site-footer__col">
+        <div class="site-footer__brand-row">
+          <span class="site-footer__logo"><img src="/assets/images/logo.png" alt="" /></span>
+          <strong>Iris Pharma</strong>
+        </div>
+        <p class="site-footer__tagline">Ayurvedic skincare &amp; herbal wellness, made in India</p>
+        <a class="site-footer__whatsapp" href="https://wa.me/919022022433" target="_blank" rel="noopener noreferrer">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>
+          Message us on WhatsApp
+        </a>
+      </div>
+
+      <div class="site-footer__col">
+        <p class="site-footer__heading">Quick links</p>
+        <a href="/index.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/cart.html">Cart</a>
+        <a href="/index.html#faq">FAQ</a>
+      </div>
+
+      <div class="site-footer__col">
+        <p class="site-footer__heading">Support</p>
+        <a href="https://wa.me/919022022433" target="_blank" rel="noopener noreferrer">WhatsApp support</a>
+        <p class="site-footer__address">
+          <svg class="icon" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:.15em"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Shop No 14, Bhaskar Complex, Opp Sai Baba Temple, Vijaynagar, Nalasopara East - 401209, Mumbai, Maharashtra</span>
+        </p>
+      </div>
+
+      <div class="site-footer__col">
+        <p class="site-footer__heading">Payments</p>
+        <p>UPI (GPay / PhonePe)</p>
+        <p>Cash before dispatch</p>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.5)">Confirmed over WhatsApp</p>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="wrap site-footer__bottom-row">
+        <nav class="site-footer__policy-nav">
+          <a href="/privacy-policy.html">Privacy Policy</a>
+          <a href="/terms-and-conditions.html">Terms &amp; Conditions</a>
+          <a href="/refund-policy.html">Refund &amp; Cancellation</a>
+          <a href="/shipping-policy.html">Shipping Policy</a>
+        </nav>
+        <p class="site-footer__copyright">&copy; <span data-year></span> Iris Pharma. All rights reserved.</p>
+      </div>
+      <p class="site-footer__made-with">Made with care for healthy skin across India.</p>
+    </div>
+  </footer>
+
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/cart.js"></script>
+    <script src="/assets/js/promo.js"></script>
+  <script src="/assets/js/whatsapp.js"></script>
+  <script src="/assets/js/header-footer.js"></script>
+  <script src="/assets/js/about.js"></script>
+</body>
+</html>

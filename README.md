@@ -1,98 +1,91 @@
 <p align="center">
-  <img src="public/logo.png" alt="Iris Pharma logo" width="120" />
+  <img src="site/assets/images/logo.png" alt="Iris Pharma logo" width="120" />
 </p>
 
-<h1 align="center">Derma 555 Malam — Iris Pharma</h1>
+<h1 align="center">Iris Pharma</h1>
 
 <p align="center">
-  A single-product landing + order page for <strong>Derma 555 Malam</strong>,
-  sold by <strong>Iris Pharma</strong> (Opposite Sai Baba Mandir, Nalasopara
-  East, Palghar, Maharashtra).
+  A static HTML/CSS/vanilla-JS storefront for <strong>Iris Pharma</strong>
+  Ayurvedic skincare products, sold by Iris Pharma (Opposite Sai Baba
+  Mandir, Nalasopara East, Palghar, Maharashtra).
 </p>
 
 ---
 
 ## What this is
 
-A single-product storefront with real payments:
+A static HTML/CSS/vanilla-JS storefront (no framework, no build step for
+the frontend) with two small serverless functions for online payments.
+Checkout offers two paths:
 
-- `/` — product landing page (photos, benefits, how to use, price).
-- `/order` — order form (name, phone, address) + a **Pay with GPay / UPI**
-  button that opens Razorpay Checkout straight into the UPI app picker.
+- **Pay online** via Razorpay (cards, UPI, netbanking) — verified server-side.
+- **WhatsApp checkout** — the original flow: cart + delivery details are
+  sent straight to the brand's WhatsApp number, payment (UPI/cash)
+  confirmed by chat.
 
-There's no database or admin dashboard, but payment is real: `/order`
-creates a Razorpay order server-side, opens Checkout scoped to UPI intent
-(so it goes straight to "choose your UPI app" — GPay, PhonePe, etc.), and
-verifies the payment signature server-side before showing "order placed".
-Nothing is marked paid on trust. After a verified payment, the confirmation
-screen offers a **Send order details via WhatsApp** button (order info +
-Razorpay payment ID pre-filled) so you receive it.
+See **`site/README.md`** for the frontend's folder structure and conventions.
 
 ## Tech stack
 
-- Next.js 16 (App Router) + React 19 + TypeScript
-- Tailwind CSS 4 + shadcn/Radix UI primitives
-- React Hook Form + Zod (order form validation)
-- Razorpay Checkout + Orders API (`src/lib/razorpay.ts`,
-  `src/app/api/razorpay/*`) — payment creation and signature verification
+- Static HTML + CSS + vanilla JavaScript (no framework, no build tooling)
+- `localStorage`-backed cart, shared across pages via `site/assets/js/cart.js`
+- WhatsApp checkout via `site/assets/js/whatsapp.js`
+- Razorpay checkout via `/api/razorpay/*` — plain Vercel Functions (Node.js,
+  no framework, no SDK — calls Razorpay's REST API directly with `fetch`)
 
-## Getting started
+## Razorpay setup
 
-```bash
-npm install
-cp .env.example .env.local   # then fill in your Razorpay keys
-npm run dev
+The `/api/razorpay/create-order` and `/api/razorpay/verify-payment`
+functions need two environment variables, from your
+[Razorpay Dashboard → Settings → API Keys](https://dashboard.razorpay.com/app/keys)
+(use the **Test Mode** keys while developing):
+
+```
+RAZORPAY_KEY_ID=...
+RAZORPAY_KEY_SECRET=...
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Set them with `vercel env add RAZORPAY_KEY_ID` / `vercel env add
+RAZORPAY_KEY_SECRET` (or in the Vercel dashboard → Project → Settings →
+Environment Variables) — never commit real keys. See `.env.example`.
 
-### Payment setup (Razorpay)
+Both functions recompute the order amount (and any promo-code discount)
+server-side from `site/assets/js/data.js` / `promo.js` — a tampered client
+request can't change what actually gets charged, and payment signatures are
+verified with a timing-safe HMAC check before an order is treated as paid.
 
-1. Create a [Razorpay](https://dashboard.razorpay.com/) account (test mode
-   works with no business verification).
-2. Dashboard → **Settings → API Keys** → generate a key pair.
-3. Copy `.env.example` to `.env.local` and fill in:
-   - `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` — server-only, used to
-     create orders and verify payment signatures.
-   - `NEXT_PUBLIC_RAZORPAY_KEY_ID` — same key ID, exposed to the browser
-     (required by Razorpay Checkout; the secret is never exposed).
-4. Test mode keys (`rzp_test_...`) let you complete the full flow without
-   moving real money. Switch to live keys (`rzp_live_...`, requires KYC)
-   when you're ready to accept real payments.
-5. `.env.local` is gitignored — never commit real keys.
+### Running locally
+
+```bash
+npm i -g vercel   # once
+vercel dev
+```
+
+`vercel dev` serves the static `site/` folder *and* the `/api` functions
+together on one local port — a plain static server (`python3 -m
+http.server`, `npx serve`) only serves the static files, so `/api/*` calls
+will 404 there.
+
+## Promo codes
+
+A dummy promo code is wired up for testing the discount flow:
+
+| Code | Discount |
+|------|----------|
+| `SAVE10` | ₹10 off |
+
+Defined in `site/assets/js/promo.js` (used by both the cart/checkout UI and
+the Razorpay order-creation function, so the discount is always the same on
+both sides).
 
 ## Editing the business details
 
-Everything specific to the product/store lives in one file:
-**`src/lib/config.ts`**
+Brand-level details (WhatsApp number, address, tagline) live in
+**`site/assets/js/config.js`**. Product data (name, price, images,
+description) lives in **`site/assets/js/data.js`**.
 
-| Field             | What it controls                                      |
-| ------------------ | ------------------------------------------------------ |
-| `price`            | Product price shown on both pages and charged via Razorpay |
-| `whatsappNumber`    | WhatsApp number used by both the footer and the post-payment order-details message |
-| `address`           | Shown in the footer                                     |
+Product photos are in `site/assets/images/`.
 
-The settlement bank account / UPI ID that receives payments is configured
-in the Razorpay dashboard, not in this codebase — see **Payment setup**
-above.
+## Design system
 
-Product photos are in `public/derma-555/` — replace those files (same
-names) to update the images used on both pages.
-
-## Project structure
-
-```
-src/app/page.tsx                    Product landing page
-src/app/order/page.tsx              Order form, Razorpay Checkout, WhatsApp confirmation
-src/app/api/razorpay/create-order   Creates a Razorpay order (server-side, trusted price)
-src/app/api/razorpay/verify         Verifies the payment signature (server-side)
-src/lib/razorpay.ts                 Server-only Razorpay SDK client
-src/components/site-header.tsx / site-footer.tsx   Shared chrome
-src/lib/config.ts                   Editable business details (price, contact)
-src/components/ui/                  shadcn UI primitives (button, input, form, card, badge…)
-docs/DESIGN_SYSTEM.md               Brand color tokens and usage rules
-```
-
-## Learn more
-
-- [Next.js Documentation](https://nextjs.org/docs)
+See **`docs/DESIGN_SYSTEM.md`** for brand color tokens and usage rules.

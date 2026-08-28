@@ -1,0 +1,271 @@
+/* products/*.html — page-specific styles, rendered into [data-pdp-root]. */
+
+.pdp {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 800px) {
+  .pdp {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+}
+
+.pdp__not-found {
+  text-align: center;
+  padding-block: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ---- Gallery ------------------------------------------------------- */
+
+.pdp__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 5.5rem;
+}
+
+.pdp__main-image {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--color-slate-100);
+}
+
+.pdp__main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdp__thumbs {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.pdp__thumb {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: var(--color-slate-100);
+}
+
+.pdp__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdp__thumb.is-active {
+  border-color: var(--color-primary);
+}
+
+/* ---- Buy box --------------------------------------------------------- */
+
+.pdp__buybox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pdp__breadcrumb {
+  display: flex;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--color-slate-400);
+  margin-bottom: 0.375rem;
+}
+
+.pdp__breadcrumb a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.pdp__name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-slate-900);
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 640px) {
+  .pdp__name {
+    font-size: 1.75rem;
+  }
+}
+
+.pdp__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-slate-500);
+}
+
+.pdp__stars {
+  color: var(--color-amber);
+  letter-spacing: 0.05em;
+}
+
+.pdp__tagline {
+  color: var(--color-slate-600);
+  font-size: 0.9375rem;
+  margin-top: 0.25rem;
+}
+
+.pdp__price-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+}
+
+.pdp__price {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--color-slate-900);
+}
+
+.pdp__mrp {
+  font-size: 1rem;
+  color: var(--color-slate-400);
+  text-decoration: line-through;
+}
+
+.pdp__tax-note {
+  font-size: 0.75rem;
+  color: var(--color-slate-400);
+}
+
+.pdp__buybox > .badge {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+.pdp__qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.pdp__add-btn {
+  flex: 1;
+}
+
+.pdp__buybox > .btn-block {
+  margin-top: 0.625rem;
+}
+
+.pdp__whatsapp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-success);
+  align-self: flex-start;
+}
+
+.pdp__whatsapp-link:hover {
+  text-decoration: underline;
+}
+
+.pdp__trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-slate-200);
+}
+
+.pdp__trust-row span {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-slate-500);
+}
+
+.pdp__trust-row .icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--color-primary);
+}
+
+/* ---- Accordion --------------------------------------------------------- */
+
+.pdp__accordion {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.pdp__accordion details {
+  border-top: 1px solid var(--color-slate-200);
+  padding-block: 0.875rem;
+}
+
+.pdp__accordion summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--color-slate-900);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pdp__accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.pdp__accordion summary::after {
+  content: "+";
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-primary);
+  transition: transform 0.15s ease;
+}
+
+.pdp__accordion details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.pdp__accordion p,
+.pdp__accordion ol {
+  margin-top: 0.625rem;
+  font-size: 0.875rem;
+  color: var(--color-slate-500);
+  line-height: 1.6;
+}
+
+.pdp__accordion ol {
+  padding-left: 1.125rem;
+}
+
+.pdp__accordion a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pdp__accordion a:hover {
+  text-decoration: underline;
+}
