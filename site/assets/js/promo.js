@@ -13,6 +13,7 @@
 })(typeof window !== "undefined" ? window : globalThis, function () {
   const PROMO_CODES = {
     SAVE10: { amount: 10, label: "₹10 off your order" },
+    ADMINVRAJ: { amount: 50, label: "₹50 off your order" },
   };
 
   function getPromo(code) {

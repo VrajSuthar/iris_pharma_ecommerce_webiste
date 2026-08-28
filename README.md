@@ -68,11 +68,12 @@ will 404 there.
 
 ## Promo codes
 
-A dummy promo code is wired up for testing the discount flow:
+Dummy promo codes are wired up for testing the discount flow:
 
 | Code | Discount |
 |------|----------|
 | `SAVE10` | ₹10 off |
+| `ADMINVRAJ` | ₹50 off |
 
 Defined in `site/assets/js/promo.js` (used by both the cart/checkout UI and
 the Razorpay order-creation function, so the discount is always the same on
