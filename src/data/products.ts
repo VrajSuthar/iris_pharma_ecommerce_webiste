@@ -41,7 +41,7 @@ export const products: Product[] = [
     categoryName: "Face / Treatment",
     price: 1699,
     image:
-      "https://images.unsplash.com/photo-1570194065650-d99fb4ee38d7?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1631438420064-8f1b2b52b2e6?auto=format&fit=crop&w=900&q=85",
     description:
       "A luxurious cream designed for an elevated evening skincare ritual.",
   },
